@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "483efd7c-b3b5-4ae4-9a83-836914763cff",
+		"name": "FSA_CLEVA_INIT_MANUEL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29929193"
+	},
+	"item": [
+		{
+			"name": "User init",
+			"item": [
+				{
+					"name": "Create user identity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"if (pm.response.code == 200){\r",
+									"\r",
+									"    //Content type is json\r",
+									"    pm.test(\"Content-Type header is application/json\", () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+									"    });\r",
+									"\r",
+									"    //Body of response is present by testing length of response\r",
+									"    pm.test(\"Body is present\", () => {\r",
+									"        jsonData.length > 1;\r",
+									"    });\r",
+									"\r",
+									"    //Testing if jsonData is an object\r",
+									"    pm.test(\"Test jsonData content\", () => {\r",
+									"        pm.expect(jsonData).to.be.an(\"object\");\r",
+									"\r",
+									"    });\r",
+									"\r",
+									"} else {\r",
+									"    var user = pm.collectionVariables.get(\"user\");\r",
+									"    //status code is not 200\r",
+									"    console.log(\"Code retourné  :\",pm.response.code);\r",
+									"    pm.test(\"User already created\", function () {\r",
+									"        pm.expect(jsonData.message).to.eql('Le login ' + user + ' est déjà utilisé.');\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var user = pm.collectionVariables.get(\"user\");\r",
+									"var password = pm.collectionVariables.get(\"password_gen\");\r",
+									"var familyName = pm.collectionVariables.get(\"familyName\");\r",
+									"var firstName = pm.collectionVariables.get(\"firstName\");\r",
+									"var externalUser = pm.collectionVariables.get(\"externalUser\");\r",
+									"var encodePassword = pm.collectionVariables.get(\"encodePassword\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"companyCode\": \"PBTP*\",\n  \"encodePassword\": \"{{encodePassword}}\",\n  \"externalUser\": \"{{externalUser}}\",\n   \"groups\": [\n    {\n      \"name\": \" TECHNIQUE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"COMPTABILITE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"CONTRAT COLLECTIF DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"CONTRAT INDIVIDUEL DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED ADH FDS\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED ADH PREV\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED Affiliation\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"PRESTATION PREVOYANCE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"PRESTATION SANTE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"TRANSVERSE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    }\n  ],\n  \"login\": \"{{user}}\",\n  \"password\": \"{{password_gen}}\",\n  \"person\": {\n    \"familyName\": \"{{familyName}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"titleCode\": \"Mr\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/userIdentities",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"userIdentities"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Automating getting token and refresh it after 1 hour of time",
+					"var now = new Date();",
+					"var expiryTime = ",
+					"    !!pm.collectionVariables.get(\"tokenExpiryTime\")",
+					"    ? Date.parse(pm.collectionVariables.get(\"tokenExpiryTime\"))",
+					"    : now;",
+					"var difference = Math.floor((now - expiryTime) / 1000);",
+					"",
+					"if (difference > -360) { // if within 6 minutes of expiring",
+					"    console.log(\"Old token expired, requesting new one\");",
+					"    var url = pm.environment.get(\"url\")",
+					"    var body = {",
+					"    \"login\" : pm.environment.get(\"login\"),",
+					"    \"password\" : pm.environment.get(\"password\"),",
+					"    };",
+					"    pm.sendRequest({",
+					"        url: url + \"/me/login\",",
+					"        method: \"POST\",",
+					"        header: {",
+					"            \"Accept\": \"application/json\",",
+					"            \"Content-Type\": \"application/json\"",
+					"        },",
+					"        body: {",
+					"            mode: 'raw',",
+					"            raw: JSON.stringify(body)",
+					"        }",
+					"    }, (error, response) => {",
+					"        if (error) {",
+					"            console.log(error);",
+					"        } else if (response) {",
+					"            // set new token",
+					"            pm.collectionVariables.set(\"token\", response.json().data.token);",
+					"            // set new expiry time",
+					"            pm.collectionVariables.set(\"tokenExpiryTime\", new Date().addSeconds(3600)); // 1 hour",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "user",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "password_gen",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "TOKEN"
+		},
+		{
+			"key": "tokenExpiryTime",
+			"value": "2023-01-01T00:00:00.000Z"
+		},
+		{
+			"key": "familyName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "firstName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "externalUser",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "encodePassword",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

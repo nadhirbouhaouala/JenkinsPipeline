@@ -1,0 +1,2749 @@
+{
+	"info": {
+		"_postman_id": "6e278af7-db02-43ed-8b41-1864eee4bad7",
+		"name": "ADP_Dossiers_Prevoyance_Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15648122",
+		"_collection_link": "https://inetum-cleva.postman.co/workspace/CLEVA-Master~491a802d-eace-4fda-b198-5d182da34b41/collection/15648122-6e278af7-db02-43ed-8b41-1864eee4bad7?action=share&creator=15648122&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Connexion et initialisation",
+			"item": [
+				{
+					"name": "Connexion CLEVA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"token\", pm.response.text());",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"console.log(pm.response.text());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "AALR",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "ALR",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"login\": \"{{login}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/me/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"me",
+								"login"
+							]
+						},
+						"description": "Chargement d'une tâche"
+					},
+					"response": []
+				},
+				{
+					"name": "Mes informations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Content type is json\r",
+									"pm.test(\"Content-Type header is application/json\", () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+									"});\r",
+									"\r",
+									"//getJson data\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"//Body of response is present by testing length of response\r",
+									"pm.test(\"Body is present\", () => {\r",
+									"    jsonData.length > 1;\r",
+									"});\r",
+									"\r",
+									"//Testing if jsonData is an object\r",
+									"pm.test(\"JsonData content\", () => {\r",
+									"    pm.expect(jsonData).to.be.an(\"object\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/me",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 28 Dec 2021 14:56:42 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=20"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Server",
+									"value": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"communication\": {},\n        \"person\": {\n            \"completeName\": \"ADMIN ADP\",\n            \"creationDate\": \"2021-03-22T19:01:50+01:00\",\n            \"familyName\": \"ADMIN\",\n            \"firstName\": \"ADP\",\n            \"freeZones\": {},\n            \"id\": \"1000481\",\n            \"lastUpdateDate\": \"2021-03-22T19:01:50+01:00\"\n        },\n        \"profiles\": [\n            \"P_WEBADMIN\"\n        ],\n        \"userCompanyCode\": \"ADP**\",\n        \"userCompanyLabel\": \"Starterbox - ADP\",\n        \"userLogin\": \"adp.admin\"\n    },\n    \"status\": \"SUCCESS\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Informations système",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Content type is json\r",
+									"pm.test(\"Content-Type header is application/json\", () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+									"});\r",
+									"\r",
+									"//getJson data\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"//Body of response is present by testing length of response\r",
+									"pm.test(\"Body is present\", () => {\r",
+									"    jsonData.length > 1;\r",
+									"});\r",
+									"\r",
+									"//Testing if jsonData is an object\r",
+									"pm.test(\"JsonData content\", () => {\r",
+									"    pm.expect(jsonData).to.be.an(\"object\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.info(pm.collectionVariables.get('folderName') + \" --> \" + this.request.name);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/system/info",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"system",
+								"info"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/system/info",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"system",
+										"info"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 28 Dec 2021 14:57:13 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=20"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Server",
+									"value": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"status\": \"UP\",\n        \"elasticSearch\": {\n            \"status\": \"NOT_CONFIGURED\"\n        },\n        \"v9_database\": {\n            \"status\": \"UP\",\n            \"tag\": \"cleva_version_tag-2021_08\"\n        },\n        \"applicationServer\": {\n            \"status\": \"UP\",\n            \"upSince\": \"2021-12-28T15:25:43+01:00\",\n            \"version\": \"15.5.0.rc202147-1\"\n        },\n        \"akka_cluster\": {\n            \"status\": \"NOT_CONFIGURED\"\n        },\n        \"transverse_database\": {\n            \"status\": \"UP\"\n        }\n    },\n    \"status\": \"SUCCESS\"\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.collectionVariables.set('folderName','Connexion et initialisation');"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Prérequis",
+			"item": [
+				{
+					"name": "Liste NAF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"const jsonData = pm.response.json();    \r",
+									"\r",
+									"let codes = jsonData.data.values;\r",
+									"\r",
+									"    pm.test(\"Has at least one code in values\", function () {\r",
+									"    pm.expect(codes[0].code).to.be.a(\"STRING\");\r",
+									"    });\r",
+									"\r",
+									"    //Set NAF code\r",
+									"    pm.collectionVariables.set(\"naf\", codes[_.random(0, codes.length-1)].code);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log('Liste des codes NAF');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/settings/lists/:helpListCode?maxResult=30",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"settings",
+								"lists",
+								":helpListCode"
+							],
+							"query": [
+								{
+									"key": "text",
+									"value": "%Activ",
+									"disabled": true
+								},
+								{
+									"key": "maxResult",
+									"value": "30"
+								},
+								{
+									"key": "code",
+									"value": "01.11",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "helpListCode",
+									"value": "NAF"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Créer un client physique",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code == 201){\r",
+									"    //getJson data\r",
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    //Content type is json\r",
+									"    pm.test(\"Content-Type header is application/json\", () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+									"    });\r",
+									"\r",
+									"    //Body of response is present by testing length of response\r",
+									"    pm.test(\"Body is present\", () => {\r",
+									"        jsonData.length > 1;\r",
+									"    });\r",
+									"\r",
+									"    //Testing if jsonData is an object\r",
+									"    pm.test(\"Test jsonData content\", () => {\r",
+									"        pm.expect(jsonData).to.be.an(\"object\");\r",
+									"\r",
+									"    });\r",
+									"\r",
+									"    //get ID\r",
+									"    pm.collectionVariables.set(\"naturalCustomerID\", jsonData.data.id);\r",
+									"    pm.collectionVariables.set(\"personAddressID\", jsonData.data.address.id);\r",
+									"    pm.collectionVariables.set(\"personID\", jsonData.data.person.id);\r",
+									"\r",
+									"\r",
+									"} else {\r",
+									"    //status code is not 201\r",
+									"    pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"/*    pm.collectionVariables.set(\"personBankDetailsID\", jsonData.data.bankDetails.id);*/"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"window = {};\r",
+									"\r",
+									"(new Function(pm.collectionVariables.get(\"fakerText\")))();\r",
+									"\r",
+									"window.faker.locale = \"fr\";\r",
+									"\r",
+									"pm.collectionVariables.set(\"customerFamilyName\", window.faker.name.lastName().toUpperCase());\r",
+									"pm.collectionVariables.set(\"customerFirstName\", window.faker.name.firstName(\"Male\").toUpperCase());\r",
+									"\r",
+									"pm.collectionVariables.set(\"customerGender\",\"MALE\");\r",
+									"\r",
+									"pm.collectionVariables.set('customerAdrZipCode', window.faker.address.zipCode());\r",
+									"pm.collectionVariables.set('customerAdrCity', window.faker.address.city());\r",
+									"pm.collectionVariables.set('customerAdressStreetName', window.faker.address.streetName());\r",
+									"\r",
+									"pm.collectionVariables.set('customerPhone', window.faker.phone.phoneNumber());\r",
+									"pm.collectionVariables.set('customerMail', window.faker.internet.exampleEmail());\r",
+									"\r",
+									"pm.collectionVariables.set(\"customerBirthDate\", moment().add(-30, 'years').format(\"YYYY-MM-DD\"));  \r",
+									"\r",
+									"pm.collectionVariables.set('customerAdressNumber', _.random(1, 10));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "ITN_ACTIVATE_SCENARIO",
+								"value": "TRUE",
+								"disabled": true
+							},
+							{
+								"key": "CLEVA-Broker-id",
+								"value": "20000060",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json;charset=UTF-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": {\n        \"city\": \"{{customerAdrCity}}\",\n        \"countryCode\": \"FR\",\n        \"countryName\": \"FRANCE\",\n        \"line2\": \"{{customerAdressNumber}}\",\n        \"line3\": \"{{customerAdressStreetName}}\",\n        \"mainAddress\": true,\n        \"name\": \"Maison de {{customerFirstName}} {{customerFamilyName}}\",\n        \"zipCode\": \"{{customerAdrZipCode}}\"\n    },\n    \"communication\": {\n        \"cellphone\": \"{{customerPhone}}\",\n        \"email\": \"{{customerMail}}\"\n    },\n    \"companyCode\": \"ADP**\",\n    \"freeZones\": {},\n    \"person\": {\n        \"birthDate\": \"{{customerBirthDate}}\",\n        \"birthPlace\": \"AMBÉRIEU\",\n        \"birthZipCode\": \"01500\",\n        \"completeName\": \"{{customerFirstName}} {{customerFamilyName}}\",\n        \"countryCode\": \"FR\",\n        \"creationDate\": \"{{dateDuJour}}\",\n        \"externalReference\": \"Reference\",\n        \"familyName\": \"{{customerFamilyName}}\",\n        \"familySituationCode\": \"M\",\n        \"firstName\": \"{{customerFirstName}}\",\n        \"freeZones\": {},\n        \"gender\": \"{{customerGender}}\",\n        \"vip\": false\n    },\n    \"prospect\": false\n}\n\n/*    \"bankDetails\": {\n        \"iban\": \"{{$randomBankAccountIban}}\",\n        \"bic\": \"{{$randomBankAccountBic}}\",\n        \"bank\": \"Credit agricole\",\n        \"bankAddress1\": \"{{customerAdressNumber}} {{customerAdressStreetName}}\",\n        \"bankAddress2\": \"Immeuble lumière\",\n        \"zipCode\": \"{{customerAdrZipCode}}\",\n        \"city\": \"{{customerAdrCity}}\",\n        \"type\": \"Main account\"\n    },*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/person/customers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"person",
+								"customers"
+							]
+						},
+						"description": "On ajoute un contact à une entreprise."
+					},
+					"response": [
+						{
+							"name": "ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n        \"address\": {\n            \"city\": \"Ambérieu-en-Bugey\",\n            \"countryCode\": \"FR\",\n            \"countryName\": \"FRANCE\",\n            \"line2\": \"34\",\n            \"line3\": \"Avenue Paul Painlevé\",\n            \"mainAddress\": true,\n            \"resume\": \" 34 Avenue Paul Painlevé, 01500 Ambérieu-en-Bugey, FRANCE\",\n            \"zipCode\": \"01500\"\n        },\n        \"communication\": {},\n        \"companyCode\": \"ADP**\",\n        \"companyLabel\": \"Starterbox - ADP\",\n        \"externalReference\": \"string\",\n        \"freeZones\": {},\n        \"person\": {\n            \"birthDate\": \"1980-01-01\",\n            \"birthPlace\": \"AMBÉRIEU\",\n            \"birthZipCode\": \"01500\",\n            \"completeName\": \"{{customerFirstName}} {{customerFamilyName}}\",\n            \"countryCode\": \"FR\",\n            \"creationDate\": \"{{dateDuJour}}\",\n            \"externalReference\": \"string\",\n            \"familyName\": \"{{customerFamilyName}}\",\n            \"familySituationId\": \"M\",\n            \"familySituationLabel\": \"Marié(e)\",\n            \"firstName\": \"{{customerFirstName}}\",\n            \"freeZones\": {},\n            \"gender\": \"{{customerGender}}\",\n            \"vip\": false\n        },\n        \"prospect\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/person/customers",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"person",
+										"customers"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 18 May 2021 16:11:26 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"data\": {\n        \"address\": {\n            \"city\": \"Ambérieu-en-Bugey\",\n            \"countryCode\": \"FR\",\n            \"countryName\": \"FRANCE\",\n            \"id\": \"1000404\",\n            \"line2\": \"34\",\n            \"line3\": \"Avenue Paul Painlevé\",\n            \"mainAddress\": true,\n            \"resume\": \" 34 Avenue Paul Painlevé, 01500 Ambérieu-en-Bugey, FRANCE\",\n            \"zipCode\": \"01500\"\n        },\n        \"communication\": {},\n        \"companyCode\": \"ADP**\",\n        \"companyLabel\": \"Starterbox - ADP\",\n        \"externalReference\": \"string\",\n        \"freeZones\": {},\n        \"id\": \"1000384\",\n        \"person\": {\n            \"birthDate\": \"1980-01-01\",\n            \"birthPlace\": \"AMBÉRIEU\",\n            \"birthZipCode\": \"01500\",\n            \"completeName\": \"ANDRE SELENA\",\n            \"countryCode\": \"FR\",\n            \"creationDate\": \"2021-05-18T16:11:26Z\",\n            \"externalReference\": \"string\",\n            \"familyName\": \"ANDRE\",\n            \"familySituationId\": \"M\",\n            \"familySituationLabel\": \"Marié(e)\",\n            \"firstName\": \"SÉLÉNA\",\n            \"freeZones\": {},\n            \"gender\": \"FEMALE\",\n            \"id\": \"1000657\",\n            \"lastUpdateDate\": \"2021-05-18T16:11:26Z\",\n            \"vip\": false\n        },\n        \"prospect\": false\n    },\n    \"status\": \"SUCCESS\"\n}"
+						},
+						{
+							"name": "Créer personne physique",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n        \"address\": {\n            \"city\": \"{{customerAdrCity}}\",\n            \"countryCode\": \"FR\",\n            \"countryName\": \"FRANCE\",\n            \"line2\": \"{{customerAdressNumber}}\",\n            \"line3\": \"{{customerAdressStreetName}}\",\n            \"mainAddress\": true,\n            \"name\":\"Maison de {{customerFirstName}} {{customerFamilyName}}\",\n            \"zipCode\": \"{{customerAdrZipCode}}\"\n        },\n        \"communication\": {\n        \"cellphone\": \"{{customerPhone}}\",\n        \"email\": \"{{customerMail}}\"\n        },\n        \"companyCode\": \"ADP**\",\n        \"freeZones\": {},\n        \"person\": {\n            \"birthDate\": \"{{customerBirthDate}}\",\n            \"birthPlace\": \"AMBÉRIEU\",\n            \"birthZipCode\": \"01500\",\n            \"completeName\": \"{{customerFirstName}} {{customerFamilyName}}\",\n            \"countryCode\": \"FR\",\n            \"creationDate\": \"{{dateDuJour}}\",\n            \"externalReference\": \"Reference\",\n            \"familyName\": \"{{customerFamilyName}}\",\n            \"familySituationCode\": \"M\",\n            \"firstName\": \"{{customerFirstName}}\",\n            \"freeZones\": {},\n            \"gender\": \"{{customerGender}}\",\n            \"vip\": false\n        },\n        \"prospect\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/person/customers",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"person",
+										"customers"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 21 Jan 2022 14:39:16 GMT"
+								},
+								{
+									"key": "Server",
+									"value": ""
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"data\": {\n        \"address\": {\n            \"city\": \"Aix-En-Provence\",\n            \"countryCode\": \"FR\",\n            \"countryName\": \"FRANCE\",\n            \"creationDate\": \"2022-01-21T15:39:17+01:00\",\n            \"id\": \"20000152\",\n            \"line2\": \"7991\",\n            \"line3\": \"Avenue de la Libération\",\n            \"mainAddress\": true,\n            \"resume\": \" 7991 Avenue de la Libération, 45476 Aix-En-Provence, FRANCE\",\n            \"updateDate\": \"2022-01-21T15:39:17+01:00\",\n            \"validityDate\": \"2022-01-21\",\n            \"zipCode\": \"45476\"\n        },\n        \"auxiliaryCode\": \"P632\",\n        \"communication\": {\n            \"cellphone\": \"01-02-75-52-62\",\n            \"email\": \"emmie.gonzalez@example.com\"\n        },\n        \"companyCode\": \"ADP**\",\n        \"companyLabel\": \"Starterbox - ADP\",\n        \"creationDate\": \"2022-01-21T15:39:17+01:00\",\n        \"debtRecoveryExclusion\": false,\n        \"directDebitType\": \"POLICE\",\n        \"discountRate\": 0,\n        \"freeZones\": {\n            \"SUPPRIMER_REFERENCE\": {}\n        },\n        \"id\": \"20000125\",\n        \"managementInformation\": {},\n        \"person\": {\n            \"birthDate\": \"1995-11-30\",\n            \"birthPlace\": \"AMBÉRIEU\",\n            \"birthZipCode\": \"01500\",\n            \"childrenNumber\": \"0\",\n            \"completeName\": \"GONZALEZ EMMIE\",\n            \"countryCode\": \"FR\",\n            \"creationDate\": \"2022-01-21T15:39:17+01:00\",\n            \"externalReference\": \"Reference\",\n            \"familyName\": \"GONZALEZ\",\n            \"familySituationCode\": \"M\",\n            \"familySituationId\": \"M\",\n            \"familySituationLabel\": \"Marié(e)\",\n            \"firstName\": \"EMMIE\",\n            \"freeZones\": {\n                \"SUPPRIMER_REFERENCE_CLIENT\": {}\n            },\n            \"gender\": \"FEMALE\",\n            \"id\": \"20000206\",\n            \"lastUpdateDate\": \"2022-01-21T15:39:17+01:00\",\n            \"vip\": false\n        },\n        \"prospect\": true,\n        \"type\": \"NATURAL\"\n    },\n    \"status\": \"SUCCESS\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Ajouter un RIB à une personne physique",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"window = {};\r",
+									"\r",
+									"(new Function(pm.collectionVariables.get(\"fakerText\")))();\r",
+									"\r",
+									"window.faker.locale = \"fr\";\r",
+									"\r",
+									"pm.collectionVariables.set('companyAdrZipCode', window.faker.address.zipCode());\r",
+									"pm.collectionVariables.set('companyAdrCity', window.faker.address.city());\r",
+									"pm.collectionVariables.set('companyAdrStreet', window.faker.address.streetName());\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"const jsonData = pm.response.json();    \r",
+									"\r",
+									"   //Testing if jsonData is an object\r",
+									"    pm.test(\"Test jsonData content\", () => {\r",
+									"        pm.expect(jsonData).to.be.an(\"object\");\r",
+									"\r",
+									"    });\r",
+									"\r",
+									"    //testing bank information\r",
+									"    pm.test(\"bank name is correct\", () => {\r",
+									"        pm.expect(jsonData.data.bank).to.eql(\"Credit agricole\");\r",
+									"    });\r",
+									"\r",
+									"    //testing iban information\r",
+									"    pm.test(\"iban is correct\", () => {\r",
+									"        pm.expect(jsonData.data.iban).to.eql(\"FR2012739000501327895759P67\");\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iban\": \"FR2012739000501327895759P67\",\r\n    \"bic\": \"AGRIFRPP\",\r\n    \"bank\": \"Credit agricole\",\r\n    \"bankAddress1\": \"14 {{companyAdrStreet}}\",\r\n    \"bankAddress2\": \"Second RIB\",\r\n    \"zipCode\": \"{{companyAdrZipCode}}\",\r\n    \"city\": \"{{companyAdrCity}}\",\r\n    \"activeUses\": [\r\n        {\r\n            \"code\": \"P\",\r\n            \"startDate\": \"{{currentDate}}\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/persons/:id/bankDetails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"persons",
+								":id",
+								"bankDetails"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{personID}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Ajouter un RIB à une personne physique",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"iban\": \"FR2012739000501327895759P67\",\r\n    \"bic\": \"{{$randomBankAccountBic}}\",\r\n    \"bank\": \"Credit agricole\",\r\n    \"bankAddress1\": \"14 {{companyAdrStreet}}\",\r\n    \"bankAddress2\": \"Second RIB\",\r\n    \"zipCode\": \"{{companyAdrZipCode}}\",\r\n    \"city\": \"{{companyAdrCity}}\",\r\n    \"countryCode\": \"FR\",\r\n    \"activeUses\": [\"AU\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/persons/:id/bankDetails",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"persons",
+										":id",
+										"bankDetails"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{personID}}"
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Jan 2022 15:06:17 GMT"
+								},
+								{
+									"key": "Server",
+									"value": ""
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"data\": {\n        \"activeUses\": [\n            \"AU\"\n        ],\n        \"bank\": \"Credit agricole\",\n        \"bankAddress1\": \"14 725 Rue Baraban\",\n        \"bankAddress2\": \"Second RIB\",\n        \"bic\": \"HGMOSIQ1\",\n        \"city\": \"Nanterre\",\n        \"countryCode\": \"FR\",\n        \"creationDate\": \"2022-01-26T16:06:17+01:00\",\n        \"iban\": \"FR2012739000501327895759P67\",\n        \"id\": \"20000237\",\n        \"zipCode\": \"67271\"\n    },\n    \"status\": \"SUCCESS\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Créer entreprise",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require('moment');\r",
+									"pm.collectionVariables.set(\"siret\", _.random(1111111, 9999999))\r",
+									"pm.collectionVariables.set(\"companyName\",\"Entreprise \"+\"{{siret}}\");\r",
+									"\r",
+									"window = {};\r",
+									"\r",
+									"(new Function(pm.collectionVariables.get(\"fakerText\")))();\r",
+									"\r",
+									"window.faker.locale = \"fr\";\r",
+									"\r",
+									"pm.collectionVariables.set('companyAdrZipCode', window.faker.address.zipCode());\r",
+									"pm.collectionVariables.set('companyAdrCity', window.faker.address.city());\r",
+									"pm.collectionVariables.set('companyAdrStreet', window.faker.address.streetName());\r",
+									"\r",
+									"pm.collectionVariables.set('companyPhone', window.faker.phone.phoneNumber());\r",
+									"pm.collectionVariables.set('companyMail', window.faker.internet.exampleEmail());\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set('companyAdressNumber', _.random(1, 10));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"jsonData = pm.response.json();\r",
+									"    pm.test(\"businessInformations is an object\", () => {\r",
+									"    pm.expect(jsonData.data.businessInformations).to.be.a(\"object\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"companyName is a string\", () => {\r",
+									"        pm.expect(jsonData.data.businessInformations.companyName).to.be.a(\"string\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"type is LEGAL\", () => {\r",
+									"        pm.expect(jsonData.data.type).to.eql(\"LEGAL\");\r",
+									"    });\r",
+									"\r",
+									"    //get ID\r",
+									"    pm.collectionVariables.set(\"companyID\", jsonData.data.id);\r",
+									"    pm.collectionVariables.set(\"businessInformationsID\", jsonData.data.businessInformations.id);\r",
+									"    pm.collectionVariables.set(\"companyAddressID\", jsonData.data.address.id);\r",
+									"\r",
+									"    pm.collectionVariables.set(\"siret\", jsonData.data.businessInformations.siret);\r",
+									"    pm.collectionVariables.set(\"auxCode\", jsonData.data.auxiliaryCode);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json;charset=UTF-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"businessInformations\": {\n        \"titleId\": \"{{companyTitle}}\",\n        \"companyName\": \"{{companyName}}\",\n        \"siret\": \"{{siret}}\",\n        \"nafCode\": \"{{naf}}\"\n    },\n    \"communication\": {\n        \"professionalPhone\": \"{{companyPhone}}\",\n        \"email\": \"{{companyMail}}\"\n    },\n    \"address\": {\n        \"countryCode\": \"FR\",\n        \"mainAddress\": true,\n        \"line1\": \"{{companyAdrStreet}}\",\n        \"line3\": \"{{companyAdrZipCode}}\",\n        \"line4\": \"{{companyAdrCity}}\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/enterprise/customers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"enterprise",
+								"customers"
+							]
+						},
+						"description": "On crée une nouvelle entreprise."
+					},
+					"response": [
+						{
+							"name": "ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"businessInformations\": {\n        \"titleId\": \"{{customerTitle}}\",\n        \"companyName\": \"{{customerName}}\",\n        \"siret\": \"{{siret}}\",\n        \"nafCode\": \"{{naf}}\"\n    },\n    \"communication\": {\n        \"professionalPhone\": \"911 222 333\",\n        \"email\": \"email@test.com\"\n    },\n    \"address\": {\n        \"countryCode\": \"FR\",\n        \"mainAddress\": true,\n        \"line1\": \"4692 Rue Dubois\",\n        \"line3\": \"86304\",\n        \"line4\": \"Limoges\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/enterprise/customers",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"enterprise",
+										"customers"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 18 May 2021 16:14:09 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"data\": {\n        \"address\": {\n            \"countryCode\": \"FR\",\n            \"countryName\": \"FRANCE\",\n            \"id\": \"1000405\",\n            \"line1\": \"4692 Rue Dubois\",\n            \"line3\": \"86304\",\n            \"line4\": \"Limoges\",\n            \"mainAddress\": true,\n            \"resume\": \"4692 Rue Dubois 86304, FRANCE\"\n        },\n        \"auxiliaryCode\": \"P130\",\n        \"businessInformations\": {\n            \"companyName\": \"ENTREPRISE 5038215\",\n            \"creationDate\": \"2021-05-18T16:14:08Z\",\n            \"freeZones\": {},\n            \"id\": \"1000658\",\n            \"lastUpdateDate\": \"2021-05-18T16:14:08Z\",\n            \"siret\": \"9844921\"\n        },\n        \"communication\": {\n            \"email\": \"email@test.com\",\n            \"professionalPhone\": \"911 222 333\"\n        },\n        \"companyCode\": \"ADP**\",\n        \"companyLabel\": \"Starterbox - ADP\",\n        \"creationDate\": \"2021-05-18T16:14:08Z\",\n        \"debtRecoveryExclusion\": false,\n        \"directDebitType\": \"POLICE\",\n        \"discountRate\": 0,\n        \"freeZones\": {},\n        \"id\": \"1000385\",\n        \"managementInformation\": {},\n        \"prospect\": true\n    },\n    \"status\": \"SUCCESS\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Ajouter un RIB à une entreprise",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require('moment');\r",
+									"\r",
+									"window = {};\r",
+									"\r",
+									"(new Function(pm.collectionVariables.get(\"fakerText\")))();\r",
+									"\r",
+									"    // This is where you can set the locale. See faker.js docs for all available locales.\r",
+									"    window.faker.locale=\"fr\";\r",
+									"\r",
+									"    pm.collectionVariables.set(\"companyAdrZipCode\", window.faker.address.zipCode());\r",
+									"    pm.collectionVariables.set(\"companyAdrCity\", window.faker.address.city());\r",
+									"\r",
+									"    pm.collectionVariables.set('companyAdressNumber', _.random(0,10))\r",
+									"\r",
+									"    pm.collectionVariables.set(\"companyAdrStreet\",  window.faker.address.streetName());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    //testing bank information\r",
+									"    pm.test(\"bank name is correct\", () => {\r",
+									"        pm.expect(jsonData.data.bank).to.eql(\"Credit agricole\");\r",
+									"    });\r",
+									"\r",
+									"    //testing iban information\r",
+									"    pm.test(\"iban is correct\", () => {\r",
+									"        pm.expect(jsonData.data.iban).to.eql(\"FR2012739000501327895759P67\");\r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iban\": \"FR2012739000501327895759P67\",\r\n    \"bic\": \"AGRIFRPP\",\r\n    \"bank\": \"Credit agricole\",\r\n    \"bankAddress1\": \"14 {{companyAdrStreet}}\",\r\n    \"bankAddress2\": \"Second RIB\",\r\n    \"zipCode\": \"{{companyAdrZipCode}}\",\r\n    \"city\": \"{{companyAdrCity}}\",\r\n    \"activeUses\": [\r\n        {\r\n            \"code\": \"P\",\r\n            \"startDate\": \"{{currentDate}}\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/enterprises/:id/bankDetails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"enterprises",
+								":id",
+								"bankDetails"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{businessInformationsID}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Ajouter un RIB à une entreprise",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"iban\": \"FR2012739000501327895759P67\",\r\n    \"bic\": \"{{$randomBankAccountBic}}\",\r\n    \"bank\": \"Credit agricole\",\r\n    \"bankAddress1\": \"14 {{companyAdrStreet}}\",\r\n    \"bankAddress2\": \"Second RIB\",\r\n    \"zipCode\": \"{{companyAdrZipCode}}\",\r\n    \"city\": \"{{companyAdrCity}}\",\r\n    \"countryCode\": \"FR\",\r\n    \"activeUses\": [\"AU\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/enterprises/:id/bankDetails",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"enterprises",
+										":id",
+										"bankDetails"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{businessInformationsID}}"
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 26 Jan 2022 15:02:17 GMT"
+								},
+								{
+									"key": "Server",
+									"value": ""
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"data\": {\n        \"activeUses\": [\n            \"AU\"\n        ],\n        \"bank\": \"Credit agricole\",\n        \"bankAddress1\": \"14 6741 Rue de la Barre\",\n        \"bankAddress2\": \"Second RIB\",\n        \"bic\": \"DGSUBHN1\",\n        \"city\": \"Champigny-sur-Marne\",\n        \"countryCode\": \"FR\",\n        \"creationDate\": \"2022-01-26T16:02:17+01:00\",\n        \"iban\": \"FR2012739000501327895759P67\",\n        \"id\": \"20000231\",\n        \"zipCode\": \"27803\"\n    },\n    \"status\": \"SUCCESS\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Prérequis Créer devis base PPCS1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code == 201){\r",
+									"    //getJson data\r",
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    //Content type is json\r",
+									"    pm.test(\"Content-Type header is application/json\", () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+									"    });\r",
+									"\r",
+									"    //Body of response is present by testing length of response\r",
+									"    pm.test(\"Body is present\", () => {\r",
+									"        jsonData.length > 1;\r",
+									"    });\r",
+									"\r",
+									"    //Testing if jsonData is an object\r",
+									"    pm.test(\"Test jsonData content\", () => {\r",
+									"        pm.expect(jsonData).to.be.an(\"object\");\r",
+									"\r",
+									"    });\r",
+									"\r",
+									"    //get ID\r",
+									"    pm.collectionVariables.set(\"policeIDPPCS1\", jsonData.data.id);\r",
+									"\r",
+									"} else {\r",
+									"    //status code is not 201\r",
+									"    pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerId\": {{companyID}},\n    \"productCode\": \"PPCS1\",\n    \"description\": \"Prévoyance déclaratif : Produit collectif standard\",\n    \"status\": {\n        \"subcode\": \"01\",\n        \"effectiveDate\" :\"{{4MonthsAgo}}\"\n    },\n    \"typology\": {\n        \"basic\": true,\n        \"basicType\": \"ENTERPRISE\"\n    },\n    \"jobClassCode\": \"ENSEMBLE\",\n    \"freeZones\": {\n        \"PPSPROD_PPCS1_ZL_AGE_MOY_SAL\": {\n            \"type\": \"NUMERIC\",\n            \"value\": 34\n        },\n        \"PPSPROD_PPCS1_ZL_DEPARTEMENT_GEO\": {\n            \"type\": \"STRING\",\n            \"value\": \"01\"\n        },\n        \"PPSPROD_PPCS1_ZL_INCAP_TAUX_RESTI\": {\n            \"type\": \"STRING\",\n            \"value\": \"NIVEAU 1\"\n        },\n        \"PPSPROD_PPCS1_ZL_FRANCHISE_ACCIDENT\": {\n            \"type\": \"NUMERIC\",\n            \"value\": 3\n        },\n        \"PPSPROD_PPCS1_ZL_INCAP_FRANCHISE\": {\n            \"type\": \"NUMERIC\",\n            \"value\": 15\n        },\n        \"PPSPROD_PPCS1_ZL_NIVEAU_DECES\": {\n            \"type\": \"STRING\",\n            \"value\": \"NIVEAU 1\"\n        },\n        \"PPSPROD_PPCS1_ZL_INVAL2_TAUX_RESTI\": {\n            \"type\": \"STRING\",\n            \"value\": \"NIVEAU 1\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/health/collective/contracts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health",
+								"collective",
+								"contracts"
+							]
+						},
+						"description": "La méthode permet de créer un devis ou contrat collectif en santé ou prévoyance. La création nécessitera un code correspondant à un produit santé disponible. Vous pouvez récuperer la liste des produits disponible avec la ressource HelpList"
+					},
+					"response": []
+				},
+				{
+					"name": "Prérequis Modifier un devis prévoyance",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// var jobCategories = pm.environment.get(\"jobCategories\");\r",
+									"// pm.collectionVariables.set(\"jobCategoryCode\", jobCategories[_.random(0, 3)].code);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"    const jsonData = pm.response.json();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment\": {\n        \"periodicity\": \"ANNUAL\",\n        \"termPayer\": \"CUSTOMER\",\n        \"termPaymentCode\": \"PA\",\n        \"directDebitDay\": \"17\"\n    },\n\n    \"status\": {\n        \"subcode\": \"02\"\n    },\n    \"contributionBase\": {\n        \"code\": \"PPCS1_ASS_DEC\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/health/collective/contracts/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health",
+								"collective",
+								"contracts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{policeIDPPCS1}}"
+								}
+							]
+						},
+						"description": "La méthode permet de modifier un devis ou contrat collectif en santé ou prévoyance."
+					},
+					"response": []
+				},
+				{
+					"name": "Prérequis Définir les modèles de couverture et cotisation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"    const jsonData = pm.response.json();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "ITN_ACTIVATE_SCENARIO",
+								"type": "text",
+								"value": "TRUE",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n}\r\n/*{\r\n    \"details\": [\r\n        {\r\n            \"beneficiaries\": [\r\n                {\r\n                    \"qualification\": \"POLICY_HOLDER\",\r\n                    \"warranties\": [\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"capital\": 20000,\r\n                            \"code\": \"IC***\",\r\n                            \"coverageCode\": \"PPSPROD_PPCS1_IC\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 2.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"code\": \"PPCS1_D_P\",\r\n            \"startDate\": \"{{6MonthsAgo}}\"\r\n        }\r\n    ]\r\n}*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/health/collective/contracts/:id/coverageModels",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health",
+								"collective",
+								"contracts",
+								":id",
+								"coverageModels"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{policeIDPPCS1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prérequis Définir les modèles de cotisation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"    const jsonData = pm.response.json();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"effectiveDate\": \"{{4MonthsAgo}}\",\r\n    \"details\": [\r\n        {\r\n            \"beneficiaries\": [\r\n                {\r\n                    \"qualification\": \"POLICY_HOLDER\",\r\n                    \"warranties\": [\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"IC**A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        },\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"RF**A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        },\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"IV1*A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        },\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"IV23A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"code\": \"PPCS1_D_C_TABCD\",\r\n            \"startDate\": \"{{6MonthsAgo}}\"\r\n        }\r\n    ]\r\n\r\n}\r\n\r\n\r\n/*{\r\n    \"details\": [\r\n        {\r\n            \"beneficiaries\": [\r\n                {\r\n                    \"qualification\": \"POLICY_HOLDER\",\r\n                    \"warranties\": [\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"IC**A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        },\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"RF**A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        },\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"IV1*A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        },\r\n                        {\r\n                            \"additionalPremiumRate\": 5.0,\r\n                            \"baseNature\": \"LUMP_BASE\",\r\n                            \"baseType\": \"AA\",\r\n                            \"baseValue\": 2.0,\r\n                            \"code\": \"IV23A\",\r\n                            \"deductibleValue\": 500,\r\n                            \"indemnity\": 0,\r\n                            \"multiplier\": 1.0,\r\n                            \"reductionCoefficient\": 4.0\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"code\": \"PPCS1_D_C_TA\",\r\n            \"startDate\": \"{{dateDuJour}}\"\r\n        }\r\n    ]\r\n}*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/health/collective/contracts/:id/contributionModels",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health",
+								"collective",
+								"contracts",
+								":id",
+								"contributionModels"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{policeIDPPCS1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prérequis Ajouter affiliation sur PPCS1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"\r",
+									"window = {};\r",
+									"\r",
+									"(new Function(pm.collectionVariables.get(\"fakerText\")))();\r",
+									"\r",
+									"    // This is where you can set the locale. See faker.js docs for all available locales.\r",
+									"    window.faker.locale=\"fr\";\r",
+									"\r",
+									"    pm.collectionVariables.set(\"insured1Cellphone\",window.faker.phone.phoneNumber());\r",
+									"    pm.collectionVariables.set(\"insured1FamilyName\", window.faker.name.lastName());\r",
+									"    pm.collectionVariables.set(\"insured1FirstName\", window.faker.name.firstName());\r",
+									"    pm.collectionVariables.set(\"insured1Mail\", window.faker.internet.email());\r",
+									"\r",
+									"pm.collectionVariables.set(\"insured1Gender\", \"MALE\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    //Set prevoyance affiliation ID\r",
+									"    pm.collectionVariables.set(\"affiPrevID\", jsonData.data.id);\r",
+									"\r",
+									"    //Set insured Prev ID\r",
+									"    pm.collectionVariables.set(\"insuredPrevID\", jsonData.data.insuredId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json;charset=UTF-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contractId\": {{policeIDPPCS1}},\r\n    \"effectiveDate\": \"{{3MonthsAgo}}\",\r\n    \"status\": \"IN_PROGRESS\",\r\n    \"companyEntryDate\": \"2020-03-23\",\r\n    \"person\": {\r\n        \"familyName\": \"{{insured1FamilyName}}\",\r\n        \"firstName\": \"{{insured1FirstName}}\",\r\n        \"gender\": \"{{insured1Gender}}\",\r\n        \"birthDate\": \"1983-01-01\",\r\n        \"countryCode\": \"FR\",\r\n        \"birthPlace\": \"AMBERIEU EN BUGEY\"\r\n    },\r\n    \"communication\": {\r\n        \"cellphone\": \"{{insured1Cellphone}}\",\r\n        \"email\": \"{{insured1Mail}}\"\r\n    },\r\n    \"earning\": {\r\n        \"annualEarning\": 30000000\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/health/affiliates",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health",
+								"affiliates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prérequis Transformer devis PPCS1 en contrat",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    //set contractNumber\r",
+									"    pm.collectionVariables.set(\"contractNumber\", jsonData.data.number);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/health/collective/contracts/:id/subscribe",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health",
+								"collective",
+								"contracts",
+								":id",
+								"subscribe"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{policeIDPPCS1}}",
+									"description": "(Required) Quote identifier"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dossier incapacité sur PPCS1",
+			"item": [
+				{
+					"name": "Recherche assuré",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.info(this.request.name);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"let assures = jsonData.data;\r",
+									"\r",
+									"let assureSelectionne = assures[_.random(0, assures.length-1)];\r",
+									"console.log(\"Assure selectionné\",assureSelectionne );\r",
+									"\r",
+									"\r",
+									"//Set title code\r",
+									"pm.collectionVariables.set(\"insuredId\", assureSelectionne.insuredId);\r",
+									"pm.collectionVariables.set(\"affiliateId\", assureSelectionne.id);\r",
+									"pm.collectionVariables.set(\"contractId\", assureSelectionne.contractId);\r",
+									"pm.collectionVariables.set(\"insuredFamilyName\", assureSelectionne.person.familyName);\r",
+									"pm.collectionVariables.set(\"insuredFirst\", assureSelectionne.person.firstName);\r",
+									"pm.collectionVariables.set(\"insuredBirthDate\", assureSelectionne.person.birthDate);\r",
+									"//Set title code\r",
+									"pm.collectionVariables.set(\"insuredName\", assureSelectionne.insuredName);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/health/affiliates?contractNumber={{contractNumber}}&productCode=PPCS1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health",
+								"affiliates"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "IN_PROGRESS",
+									"disabled": true
+								},
+								{
+									"key": "contractNumber",
+									"value": "{{contractNumber}}"
+								},
+								{
+									"key": "productCode",
+									"value": "PPCS1"
+								},
+								{
+									"key": "situationDate",
+									"value": "{{1MonthAgo}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Nouveau dossier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"//Set title code\r",
+									"pm.collectionVariables.set(\"recordId\", jsonData.data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "ITN_ACTIVATE_SCENARIO",
+								"value": "true",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"affiliationId\": {{affiliateId}},\n    \"contractId\": {{contractId}},\n    \"insuredId\": {{insuredId}},\n    \"natureCode\": \"INCAP - INVAL\",\n    \"circumstanceCode\": \"ACC_PRIV\",\n    \"status\": {\n        \"occurrenceDate\": \"{{currentDate}}\",\n        \"openingDate\": \"{{currentDate}}\",\n        \"endDate\": \"{{1MonthLater}}\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/healthprovision/records",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"records"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Chargement dossier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set(\"recordId\", jsonData.data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/healthprovision/records/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"records",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{recordId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ajouter un sous dossier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"jsonData = pm.response.json();\r",
+									"\r",
+									"let periods = jsonData.data.basisOfCompensations;\r",
+									"\r",
+									"periods = periods[_.random(0, periods.length-1)];\r",
+									"\r",
+									"pm.collectionVariables.set(\"periodId\", periods.id)\r",
+									"\r",
+									"pm.collectionVariables.set(\"subRecordId\", jsonData.data.id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"benefitCode\": \"INC_ITT\",\n    \"circumstanceCode\": \"ACC_PRIV\",\n    \"settlementFrequency\": \"IMMEDIATE\",\n    \"isRelapse\": false,\n    \"natureCode\": \"INCAP\",\n    \"endDate\": \"{{55DaysLater}}\",\n    \"startDate\": \"{{currentDate}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/healthprovision/records/:id/subrecords",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"records",
+								":id",
+								"subrecords"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{recordId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consulter le sous dossier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/healthprovision/subrecords/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"subrecords",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{subRecordId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Récupérer une periode de règlement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"jsonData = pm.response.json();\r",
+									"\r",
+									"let periods = jsonData.data;\r",
+									"\r",
+									"periods = periods[_.random(0, periods.length-1)];\r",
+									"\r",
+									"pm.collectionVariables.set(\"periodId\", periods.id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/healthprovision/subrecords/:id/periods",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"subrecords",
+								":id",
+								"periods"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{subRecordId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ajouter un sous dossier rechute",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"benefitCode\": \"INC_ITT\",\n    \"circumstanceCode\": \"ACC_PRIV\",\n    \"handoverDate\": \"{{60DaysLater}}\",\n    \"isRelapse\": true,\n    \"natureCode\": \"RECHU\",\n    \"startDate\": \"{{currentDate}}\",\n    \"endDate\": \"{{65DaysLater}}\",\n    \"settlementFrequency\": \"IMMEDIATE\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/healthprovision/records/:id/subrecords",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"records",
+								":id",
+								"subrecords"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{recordId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prolongation arrêt de travail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"extensionEndDate\": \"{{70DaysLater}}\",\n    \"extensionStartDate\": \"{{65DaysLater}}\",\n    \"recovery\": {\n        \"reason\": \"recommandation du médecin\",\n        \"recoveryDate\": \"{{70DaysLater}}\",\n        \"subRecordEndDate\": \"{{70DaysLater}}\"\n    },\n    \"therapeuticHalfTime\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/healthprovision/subrecords/:id/extension",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"subrecords",
+								":id",
+								"extension"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{subRecordId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier periode de règlement",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"duration\": 4.0,\r\n    \"awaiting\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/healthprovision/subrecords/:id/periods/:periodId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"healthprovision",
+								"subrecords",
+								":id",
+								"periods",
+								":periodId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{subRecordId}}"
+								},
+								{
+									"key": "periodId",
+									"value": "{{periodId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const moment = require('moment');",
+					"pm.collectionVariables.set(\"currentDate\", moment().format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"2WeeksLater\", moment().add(2, 'weeks').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"70DaysLater\", moment().add(65, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"65DaysLater\", moment().add(65, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"60DaysLater\", moment().add(60, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"55DaysLater\", moment().add(55, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"50DaysLater\", moment().add(50, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"45DaysLater\", moment().add(45, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"35DaysLater\", moment().add(35, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"1MonthLater\", moment().add(30, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"1YearLater\", moment().add(1, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"6MonthsLater\", moment().add(180, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"15DaysAgo\", moment().add(-15, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"1MonthAgo\", moment().add(-1, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"2MonthsAgo\", moment().add(-1, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"70DaysAgo\", moment().add(-70, 'days').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"3MonthsAgo\", moment().add(-1, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"4MonthsAgo\", moment().add(-4, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"5MonthsAgo\", moment().add(-5, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"6MonthsAgo\", moment().add(-6, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"9MonthsAgo\", moment().add(-9, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"11MonthsAgo\", moment().add(-11, 'months').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"lastYear\", moment().add(-1, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"5YearsAgo\", moment().add(-5, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"10YearsAgo\", moment().add(-10, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"15YearsAgo\", moment().add(-15, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"20YearsAgo\", moment().add(-20, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"30YearsAgo\", moment().add(-30, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"35YearsAgo\", moment().add(-35, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"40YearsAgo\", moment().add(-40, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"45YearsAgo\", moment().add(-45, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"50YearsAgo\", moment().add(-50, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"60YearsAgo\", moment().add(-60, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"70YearsAgo\", moment().add(-70, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"currentDateSearchFormat\", moment().format(\"YYYY/MM/DD\"));",
+					"",
+					"//Date de naissances",
+					"pm.collectionVariables.set(\"birthDate10YearsAgo\", moment().add(-10, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"birthDate20YearsAgo\", moment().add(-20, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"birthDate30YearsAgo\", moment().add(-30, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"birthDate40YearsAgo\", moment().add(-40, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"birthDate50YearsAgo\", moment().add(-50, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"birthDate60YearsAgo\", moment().add(-60, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"birthDate70YearsAgo\", moment().add(-70, 'years').format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set(\"birthDate80YearsAgo\", moment().add(-80, 'years').format(\"YYYY-MM-DD\"));",
+					"",
+					"//Default variables for GET Methods",
+					"pm.collectionVariables.set(\"defaultOffset\", 0);",
+					"pm.collectionVariables.set(\"defaultLimit\", 10);",
+					"pm.collectionVariables.set(\"50_Limit\", 50);",
+					"",
+					"var useId = false;",
+					"if (request.url.includes('/:id')){",
+					"    useId == true;",
+					"}",
+					"",
+					"checkFaker = pm.collectionVariables.has(\"fakerText\")",
+					"if (checkFaker == false)",
+					"{",
+					"    pm.collectionVariables.set(\"fakerText\", \"\")",
+					"    pm.collectionVariables.get(\"fakerText\");",
+					"    console.log(\"vérification faker : \"+pm.collectionVariables.get(\"fakerText\").length);",
+					"}",
+					"",
+					"if (pm.collectionVariables.get(\"fakerText\").length < 1){",
+					"    pm.sendRequest(pm.environment.get(\"fakerUrl\"), (error, response) => {",
+					"    pm.collectionVariables.set(\"fakerText\", response.text());",
+					"    console.log(\"la librairie a du être chargée\");})",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"if (request.name != 'Connexion CLEVA' && request.name != 'Connexion Cleva'){",
+					"",
+					"    if (request.method == 'GET'){",
+					"        pm.test(\"Status code is 200\", function () {",
+					"            pm.response.to.have.status(200);",
+					"        });",
+					"        if (!request.url.includes('/settings/lists')&&!request.url.includes('/me')&&!request.url.includes('/system')&&pm.collectionVariables.get(\"useId\")==false){",
+					"            pm.test(\"Limit is a number\", function () {",
+					"                pm.expect(pm.response.json().limit).to.be.an(\"number\");",
+					"            });",
+					"            pm.test(\"resultSize is a number\", function () {",
+					"                pm.expect(pm.response.json().resultSize).to.be.an(\"number\");",
+					"            });",
+					"            pm.test(\"offset is a number\", function () {",
+					"                pm.expect(pm.response.json().offset).to.be.an(\"number\");",
+					"            });  ",
+					"        }",
+					"    }",
+					"",
+					"    if (request.method == 'POST'){",
+					"",
+					"        pm.test(\"Successful POST request\", function () {",
+					"            pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+					"        });",
+					"    }",
+					"",
+					"    if (request.method == 'PUT'){",
+					"        pm.test(\"Successful POST request\", function () {",
+					"            pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+					"        });",
+					"    }",
+					"",
+					"    if (request.method == 'PATCH'){",
+					"",
+					"        pm.test(\"Status code is 200\", function () {",
+					"            pm.response.to.have.status(200);",
+					"        });",
+					"    }",
+					"",
+					"    if (pm.response.code == 200||pm.response.code == 201||pm.response.code == 202){",
+					"        //Content type is json",
+					"        pm.test(\"Content-Type header is application/json\", () => {",
+					"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+					"        });",
+					"",
+					"        //getJson data",
+					"        const jsonData = pm.response.json();",
+					"",
+					"        //Body of response is present by testing length of response",
+					"        pm.test(\"Body is present\", () => {",
+					"            jsonData.length > 1;",
+					"        });",
+					"",
+					"        //Testing if jsonData is an object",
+					"        pm.test(\"JsonData content\", () => {",
+					"            pm.expect(jsonData).to.be.an(\"object\");",
+					"        });",
+					"    }",
+					"",
+					"}",
+					"",
+					"//Styles pour les listes",
+					"if (request.url.includes('/settings/lists')){",
+					"    pm.test(\"Code is a string\", function () {",
+					"        pm.expect(pm.response.json().data.code).to.be.a(\"string\");",
+					"    });",
+					"    pm.test(\"description is a string\", function () {",
+					"        pm.expect(pm.response.json().data.description).to.be.a(\"string\");",
+					"    });",
+					"    pm.test(\"moreResults is a boolean\", function () {",
+					"        pm.expect(pm.response.json().data.moreResults).to.be.a(\"boolean\");",
+					"    });",
+					"    pm.test(\"title is a string\", function () {",
+					"        pm.expect(pm.response.json().data.title).to.be.a(\"string\");",
+					"    });",
+					"    pm.test(\"type is a string\", function () {",
+					"        pm.expect(pm.response.json().data.type).to.be.a(\"string\");",
+					"    });",
+					"    /*",
+					"    pm.visualizer.set(pm.collectionVariables.get(\"templateListes\"), {",
+					"      response: pm.response.json()",
+					"    });*/",
+					"}",
+					"",
+					"//Tests de performance",
+					"if (pm.environment.get(\"executePerformanceTests\") == 'true'){",
+					"  if (request.method == 'GET'){",
+					"    //Les listes doivent s'exécuter en moins de 500 ms",
+					"    if (request.url.includes('/settings/lists')){",
+					"        pm.test(\"Response time is less than 500ms\", function () {",
+					"        pm.expect(pm.response.responseTime).to.be.below(500);",
+					"       });",
+					"    }else{",
+					"        //Les recherches doivent s'exécuter en mois de une seconde et demi",
+					"        pm.test(\"Response time is less than 1500ms\", function () {",
+					"        pm.expect(pm.response.responseTime).to.be.below(1500);",
+					"       });",
+					"    }  ",
+					"  }",
+					"  if (request.method == 'POST'){",
+					"       //Les POST doivent s'exécuter en moins de 2 secondes",
+					"      pm.test(\"Response time is less than 2000ms\", function () {",
+					"          pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"      });",
+					"  }",
+					"",
+					"  if (request.method == 'PATCH'){",
+					"      //Les PATCH doivent s'exécuter en moins de 2 secondes",
+					"      pm.test(\"Response time is less than 2000ms\", function () {",
+					"          pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"      });",
+					"  }",
+					"",
+					"  if (request.method == 'PUT'){",
+					"      //Les PUT doivent s'exécuter en moins de 2 secondes",
+					"      pm.test(\"Response time is less than 2000ms\", function () {",
+					"          pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"      });",
+					"  }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "dateDuJour",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Plus_1_Mois",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Plus_6_Mois",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_1_Mois",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_6_Mois",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_5_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_10_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_15_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_20_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_30_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_35_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_40_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_45_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_50_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_60_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Moins_70_Ans",
+			"value": ""
+		},
+		{
+			"key": "dateDuJourFormatRecherche",
+			"value": ""
+		},
+		{
+			"key": "folderName",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "insuredIdForStatementConsultationGeneraliste",
+			"value": ""
+		},
+		{
+			"key": "insuredFamilyNameForStatementConsultationGeneraliste",
+			"value": ""
+		},
+		{
+			"key": "insuredFirstNameForStatementConsultationGeneraliste",
+			"value": ""
+		},
+		{
+			"key": "insuredBirthDateForStatementConsultationGeneraliste",
+			"value": ""
+		},
+		{
+			"key": "insuredNameForStatementConsultationGeneraliste",
+			"value": ""
+		},
+		{
+			"key": "insuredId",
+			"value": ""
+		},
+		{
+			"key": "insuredFamilyName",
+			"value": ""
+		},
+		{
+			"key": "insuredFirst",
+			"value": ""
+		},
+		{
+			"key": "insuredBirthDate",
+			"value": ""
+		},
+		{
+			"key": "insuredName",
+			"value": ""
+		},
+		{
+			"key": "affiliateId",
+			"value": ""
+		},
+		{
+			"key": "contractId",
+			"value": ""
+		},
+		{
+			"key": "dossierId",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Plus_10_Jours",
+			"value": ""
+		},
+		{
+			"key": "dateDuJour_Plus_45_Jours",
+			"value": ""
+		},
+		{
+			"key": "currentDate",
+			"value": ""
+		},
+		{
+			"key": "55DaysLater",
+			"value": ""
+		},
+		{
+			"key": "45DaysLater",
+			"value": ""
+		},
+		{
+			"key": "1MonthLater",
+			"value": ""
+		},
+		{
+			"key": "6MonthsLater",
+			"value": ""
+		},
+		{
+			"key": "1MonthAgo",
+			"value": ""
+		},
+		{
+			"key": "4MonthsAgo",
+			"value": ""
+		},
+		{
+			"key": "5MonthsAgo",
+			"value": ""
+		},
+		{
+			"key": "6MonthsAgo",
+			"value": ""
+		},
+		{
+			"key": "lastYear",
+			"value": ""
+		},
+		{
+			"key": "5YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "10YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "15YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "20YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "30YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "35YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "40YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "45YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "50YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "60YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "70YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "currentDateSearchFormat",
+			"value": ""
+		},
+		{
+			"key": "birthDate10YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "birthDate20YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "birthDate30YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "birthDate40YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "birthDate50YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "birthDate60YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "birthDate70YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "birthDate80YearsAgo",
+			"value": ""
+		},
+		{
+			"key": "defaultOffset",
+			"value": ""
+		},
+		{
+			"key": "defaultLimit",
+			"value": ""
+		},
+		{
+			"key": "50_Limit",
+			"value": ""
+		},
+		{
+			"key": "periodId",
+			"value": ""
+		},
+		{
+			"key": "periodBeginDate",
+			"value": ""
+		},
+		{
+			"key": "50DaysLater",
+			"value": ""
+		},
+		{
+			"key": "35DaysLater",
+			"value": ""
+		},
+		{
+			"key": "65DaysLater",
+			"value": ""
+		},
+		{
+			"key": "60DaysLater",
+			"value": ""
+		},
+		{
+			"key": "subRecordId",
+			"value": ""
+		},
+		{
+			"key": "70DaysLater",
+			"value": ""
+		},
+		{
+			"key": "2MonthsAgo",
+			"value": ""
+		},
+		{
+			"key": "70DaysAgo",
+			"value": ""
+		},
+		{
+			"key": "customerFamilyName",
+			"value": ""
+		},
+		{
+			"key": "customerFirstName",
+			"value": ""
+		},
+		{
+			"key": "customerGender",
+			"value": ""
+		},
+		{
+			"key": "customerPhone",
+			"value": ""
+		},
+		{
+			"key": "customerMail",
+			"value": ""
+		},
+		{
+			"key": "customerBirthDate",
+			"value": ""
+		},
+		{
+			"key": "customerAdrZipCode",
+			"value": ""
+		},
+		{
+			"key": "customerAdrCity",
+			"value": ""
+		},
+		{
+			"key": "customerAdressNumber",
+			"value": ""
+		},
+		{
+			"key": "customerAdressStreetName",
+			"value": ""
+		},
+		{
+			"key": "naturalCustomerID",
+			"value": ""
+		},
+		{
+			"key": "personAddressID",
+			"value": ""
+		},
+		{
+			"key": "personID",
+			"value": ""
+		},
+		{
+			"key": "companyAdrZipCode",
+			"value": ""
+		},
+		{
+			"key": "companyAdrCity",
+			"value": ""
+		},
+		{
+			"key": "companyAdrStreet",
+			"value": ""
+		},
+		{
+			"key": "siret",
+			"value": ""
+		},
+		{
+			"key": "companyName",
+			"value": ""
+		},
+		{
+			"key": "companyMail",
+			"value": ""
+		},
+		{
+			"key": "companyPhone",
+			"value": ""
+		},
+		{
+			"key": "companyID",
+			"value": ""
+		},
+		{
+			"key": "businessInformationsID",
+			"value": ""
+		},
+		{
+			"key": "companyAddressID",
+			"value": ""
+		},
+		{
+			"key": "auxCode",
+			"value": ""
+		},
+		{
+			"key": "policeIDPPCS1",
+			"value": ""
+		},
+		{
+			"key": "insured1Gender",
+			"value": ""
+		},
+		{
+			"key": "insured1FamilyName",
+			"value": ""
+		},
+		{
+			"key": "insured1FirstName",
+			"value": ""
+		},
+		{
+			"key": "insured1Cellphone",
+			"value": ""
+		},
+		{
+			"key": "insured1Mail",
+			"value": ""
+		},
+		{
+			"key": "3MonthsAgo",
+			"value": ""
+		},
+		{
+			"key": "affiPrevID",
+			"value": ""
+		},
+		{
+			"key": "insuredPrevID",
+			"value": ""
+		},
+		{
+			"key": "contractNumber",
+			"value": ""
+		},
+		{
+			"key": "recordId",
+			"value": ""
+		},
+		{
+			"key": "naf",
+			"value": ""
+		},
+		{
+			"key": "companyAdressNumber",
+			"value": ""
+		},
+		{
+			"key": "1YearLater",
+			"value": ""
+		},
+		{
+			"key": "fakerText",
+			"value": ""
+		},
+		{
+			"key": "grouping",
+			"value": ""
+		},
+		{
+			"key": "productCode",
+			"value": ""
+		},
+		{
+			"key": "PPCM2_PUBid",
+			"value": ""
+		},
+		{
+			"key": "PPCM2_PUBnumber",
+			"value": ""
+		},
+		{
+			"key": "policeIDPPCM2_PUB",
+			"value": ""
+		},
+		{
+			"key": "policeNumberPPCM2_PUB",
+			"value": ""
+		},
+		{
+			"key": "2WeeksLater",
+			"value": ""
+		},
+		{
+			"key": "codeAssPPCM",
+			"value": ""
+		},
+		{
+			"key": "insurerId",
+			"value": ""
+		},
+		{
+			"key": "insured1BirthDate",
+			"value": ""
+		},
+		{
+			"key": "affiPrevPPCM2DPid",
+			"value": ""
+		},
+		{
+			"key": "insuredPrevPPCM2DPid",
+			"value": ""
+		},
+		{
+			"key": "randomDay",
+			"value": ""
+		},
+		{
+			"key": "prevRecordID",
+			"value": ""
+		},
+		{
+			"key": "11MonthsAgo",
+			"value": ""
+		},
+		{
+			"key": "9MonthsAgo",
+			"value": ""
+		},
+		{
+			"key": "15DaysAgo",
+			"value": ""
+		},
+		{
+			"key": "workStoppageEventId",
+			"value": ""
+		},
+		{
+			"key": "workStoppageEventFolderId",
+			"value": ""
+		}
+	]
+}

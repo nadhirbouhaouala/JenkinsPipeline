@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        VIRTUAL_ENV = 'venv'
+        PYTHON = 'python3'
+    }
+
+    stages {
+        stage('Cloner le dépôt') {
+            steps {
+                git url: 'https://github.com/votre-utilisateur/votre-repo.git', branch: 'main'
+            }
+        }
+
+    stage('Generer les données de test via Python') {
+        agent {
+            docker {
+                image 'python:3.9'
+            }
+        }
+        steps {
+            sh 'python --version'
+            sh 'pip install --upgrade pip'
+            sh "${PYTHON} -m venv ${VIRTUAL_ENV}"
+            sh "${VIRTUAL_ENV}/bin/activate"
+            sh 'pip install -r requirements.txt'
+            sh 'python script.py'
+            sh "${PYTHON} creation_adherent.py"
+            sh "${PYTHON} creation_affiliation.py"
+            sh "${PYTHON} creation_entreprise.py"
+        }
+    }
+
+    stage('Exécuter les collections avec Noman') {
+        agent {
+            docker {
+                image 'node:14'
+            }
+        }
+        steps {
+            sh 'node --version'
+            sh 'npm install'
+            sh 'npm install -g newman'
+            sh "newman run collections\FSA_CLEVA_JDD.postman_collection.json -e environments\Beta.postman_environment.json -k --iteration-data data\jdd_adherents_newman.csv --reporters=cli,htmlextra > logfile.txt"
+            ef fileContent = readFile 'logfile.txt'
+            echo "Résultat:\n${fileContent}"
+            archiveArtifacts artifacts: 'logfile.txt', fingerprint: true
+        }
+    }
+
+    // export logfile
+
+}

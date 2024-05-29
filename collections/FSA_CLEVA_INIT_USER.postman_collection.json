@@ -1,0 +1,329 @@
+{
+	"info": {
+		"_postman_id": "46bd5c8d-121c-410c-af25-c63f0028fff3",
+		"name": "FSA_CLEVA_INIT_USER",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29929193"
+	},
+	"item": [
+		{
+			"name": "User init",
+			"item": [
+				{
+					"name": "Init request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Initialization completed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"type\", pm.iterationData.get(\"type\"));\r",
+									"var type = pm.variables.get(\"type\");\r",
+									"\r",
+									"if (type === 'QA') {\r",
+									"    postman.setNextRequest('Create user identity QA');\r",
+									"} else {\r",
+									"    postman.setNextRequest('Create user identity');\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user identity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"if (pm.response.code == 200){\r",
+									"    //User created\r",
+									"    var login = pm.variables.get(\"login\");\r",
+									"    pm.test(\"User is created\", function () {\r",
+									"        pm.expect(jsonData.data.login).to.eql(login);\r",
+									"    });\r",
+									"\r",
+									"} else if (pm.response.code == 400 && jsonData.errorCode == \"ProfilServiceImpl.create.bFindUser\") {\r",
+									"    //User already created\r",
+									"    var login = pm.variables.get(\"login\");\r",
+									"    pm.test(\"User is already created\", function () {\r",
+									"        pm.expect(jsonData.message).to.eql('Le login ' + login + ' est déjà utilisé.');\r",
+									"    });\r",
+									"    \r",
+									"} else {\r",
+									"    //status code is not 200\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"postman.setNextRequest(null);\r",
+									"\r",
+									"pm.variables.set(\"login\", pm.iterationData.get(\"login\"));\r",
+									"pm.variables.set(\"password\", pm.iterationData.get(\"password\"));\r",
+									"pm.variables.set(\"familyName\", pm.iterationData.get(\"familyName\"));\r",
+									"pm.variables.set(\"firstName\", pm.iterationData.get(\"firstName\"));\r",
+									"pm.variables.set(\"companyCode\", pm.iterationData.get(\"companyCode\"));\r",
+									"pm.variables.set(\"externalUser\", pm.iterationData.get(\"externalUser\"));\r",
+									"\r",
+									"var login = pm.variables.get(\"login\");\r",
+									"var password = pm.variables.get(\"password\");\r",
+									"var familyName = pm.variables.get(\"familyName\");\r",
+									"var firstName = pm.variables.get(\"firstName\");\r",
+									"var companyCode = pm.variables.get(\"companyCode\");\r",
+									"var externalUser = pm.variables.get(\"externalUser\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"companyCode\": \"{{companyCode}}\",\n  \"encodePassword\": true,\n  \"externalUser\": {{externalUser}},\n  \"groups\": [\n    {\n      \"name\": \" TECHNIQUE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"COMPTABILITE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"CONTRAT COLLECTIF DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"CONTRAT INDIVIDUEL DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED ADH FDS\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED ADH PREV\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED Affiliation\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"PRESTATION PREVOYANCE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"PRESTATION SANTE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"TRANSVERSE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    }\n  ],\n  \"login\": \"{{login}}\",\n  \"password\": \"{{password}}\",\n  \"person\": {\n    \"familyName\": \"{{familyName}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"titleCode\": \"Mr\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/userIdentities",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"userIdentities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user identity QA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//getJson data\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"if (pm.response.code == 200){\r",
+									"    //User created\r",
+									"    var login = pm.variables.get(\"login\");\r",
+									"    pm.test(\"User is created\", function () {\r",
+									"        pm.expect(jsonData.data.login).to.eql(login);\r",
+									"    });\r",
+									"\r",
+									"} else if (pm.response.code == 400 && jsonData.errorCode == \"ProfilServiceImpl.create.bFindUser\") {\r",
+									"    //User already created\r",
+									"    var login = pm.variables.get(\"login\");\r",
+									"    pm.test(\"User is already created\", function () {\r",
+									"        pm.expect(jsonData.message).to.eql('Le login ' + login + ' est déjà utilisé.');\r",
+									"    });\r",
+									"    \r",
+									"} else {\r",
+									"    //status code is not 200\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"login\", pm.iterationData.get(\"login\"));\r",
+									"pm.variables.set(\"password\", pm.iterationData.get(\"password\"));\r",
+									"pm.variables.set(\"familyName\", pm.iterationData.get(\"familyName\"));\r",
+									"pm.variables.set(\"firstName\", pm.iterationData.get(\"firstName\"));\r",
+									"pm.variables.set(\"companyCode\", pm.iterationData.get(\"companyCode\"));\r",
+									"pm.variables.set(\"externalUser\", pm.iterationData.get(\"externalUser\"));\r",
+									"\r",
+									"var login = pm.variables.get(\"login\");\r",
+									"var password = pm.variables.get(\"password\");\r",
+									"var familyName = pm.variables.get(\"familyName\");\r",
+									"var firstName = pm.variables.get(\"firstName\");\r",
+									"var companyCode = pm.variables.get(\"companyCode\");\r",
+									"var externalUser = pm.variables.get(\"externalUser\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"companyCode\": \"{{companyCode}}\",\n  \"encodePassword\": true,\n  \"externalUser\": {{externalUser}},\n  \"groups\": [\n    {\n      \"name\": \" TECHNIQUE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"COMPTABILITE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"CONTRAT COLLECTIF DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"CONTRAT INDIVIDUEL DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED ADH FDS\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED ADH PREV\",\n      \"role\": \"RESPONSIBLE\"\n    },\n        {\n      \"name\": \"GED Affiliation\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"PRESTATION PREVOYANCE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"PRESTATION SANTE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    },\n    {\n      \"name\": \"TRANSVERSE DEFAUT\",\n      \"role\": \"RESPONSIBLE\"\n    }\n  ],\n  \"profiles\": [\n    {\n      \"name\": \"PB_SOCLE_PROFIL_ADMINISTRATEUR\"\n    }\n  ],\n  \"login\": \"{{login}}\",\n  \"password\": \"{{password}}\",\n  \"person\": {\n    \"familyName\": \"{{familyName}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"titleCode\": \"Mr\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/userIdentities",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"userIdentities"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Automating getting token and refresh it after 1 hour of time",
+					"var now = new Date();",
+					"var expiryTime = ",
+					"    !!pm.collectionVariables.get(\"tokenExpiryTime\")",
+					"    ? Date.parse(pm.collectionVariables.get(\"tokenExpiryTime\"))",
+					"    : now;",
+					"var difference = Math.floor((now - expiryTime) / 1000);",
+					"",
+					"if (difference > -360) { // if within 6 minutes of expiring",
+					"    console.log(\"Old token expired, requesting new one\");",
+					"    var url = pm.environment.get(\"url\")",
+					"    var body = {",
+					"    \"login\" : pm.environment.get(\"login\"),",
+					"    \"password\" : pm.environment.get(\"password\"),",
+					"    };",
+					"    pm.sendRequest({",
+					"        url: url + \"/me/login\",",
+					"        method: \"POST\",",
+					"        header: {",
+					"            \"Accept\": \"application/json\",",
+					"            \"Content-Type\": \"application/json\"",
+					"        },",
+					"        body: {",
+					"            mode: 'raw',",
+					"            raw: JSON.stringify(body)",
+					"        }",
+					"    }, (error, response) => {",
+					"        if (error) {",
+					"            console.log(error);",
+					"        } else if (response) {",
+					"            // set new token",
+					"            pm.collectionVariables.set(\"token\", response.json().data.token);",
+					"            // set new expiry time",
+					"            pm.collectionVariables.set(\"tokenExpiryTime\", new Date().addSeconds(3600)); // 1 hour",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "TOKEN"
+		},
+		{
+			"key": "tokenExpiryTime",
+			"value": "2023-01-01T00:00:00.000Z"
+		}
+	]
+}
